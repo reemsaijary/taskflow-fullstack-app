@@ -87,3 +87,39 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+class Profile(models.Model):
+    class ThemePreference(models.TextChoices):
+        LIGHT = "LIGHT", "Light"
+        DARK = "DARK", "Dark"
+        SYSTEM = "SYSTEM", "System"
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="profile",
+    )
+
+    bio = models.TextField(
+        blank=True,
+        max_length=500,
+    )
+
+    profile_image = models.ImageField(
+        upload_to="profiles/",
+        blank=True,
+        null=True,
+    )
+
+    theme_preference = models.CharField(
+        max_length=10,
+        choices=ThemePreference.choices,
+        default=ThemePreference.SYSTEM,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.email} Profile"
+
