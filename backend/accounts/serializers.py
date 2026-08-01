@@ -73,8 +73,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
 
+
 class CurrentUserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
+    profile = ProfileSerializer(required=False)
 
     class Meta:
         model = User
@@ -86,3 +87,34 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "date_joined",
             "profile",
         ]
+
+        read_only_fields = [
+            "id",
+            "email",
+            "date_joined",
+        ]
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop("profile", None)
+
+        instance.first_name = validated_data.get(
+            "first_name",
+            instance.first_name,
+        )
+
+        instance.last_name = validated_data.get(
+            "last_name",
+            instance.last_name,
+        )
+
+        instance.save()
+
+        if profile_data is not None:
+            profile = instance.profile
+
+            for field, value in profile_data.items():
+                setattr(profile, field, value)
+
+            profile.save()
+
+        return instance
