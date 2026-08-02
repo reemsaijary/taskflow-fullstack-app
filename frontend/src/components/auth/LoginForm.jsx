@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import api from "../../api/axios";
 import Button from "../common/Button";
@@ -12,6 +13,8 @@ function LoginForm() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -37,11 +40,14 @@ function LoginForm() {
 
       setMessage("Login successful.");
       setMessageType("success");
+
+      navigate("/dashboard");
     } catch (error) {
       setMessage(
         error.response?.data?.detail ||
           "Invalid email or password."
       );
+
       setMessageType("error");
     } finally {
       setIsSubmitting(false);
@@ -52,7 +58,9 @@ function LoginForm() {
     <div className="login-card">
       <div className="login-heading">
         <span className="login-eyebrow">Welcome back</span>
+
         <h2>Login to TaskFlow</h2>
+
         <p>Enter your account details to continue.</p>
       </div>
 
@@ -75,6 +83,7 @@ function LoginForm() {
         <div className="form-group">
           <div className="password-label">
             <label htmlFor="password">Password</label>
+
             <button className="text-button" type="button">
               Forgot password?
             </button>
@@ -109,9 +118,10 @@ function LoginForm() {
 
       <p className="register-text">
         Don&apos;t have an account?
-        <button className="text-button" type="button">
+
+        <Link className="text-button" to="/register">
           Create account
-        </button>
+        </Link>
       </p>
     </div>
   );
