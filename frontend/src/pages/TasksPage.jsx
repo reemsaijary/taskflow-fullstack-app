@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Search } from "lucide-react";
+
+import { Pencil, Plus, Search } from "lucide-react";
+import EditTaskModal from "../components/tasks/EditTaskModal";
 
 import api from "../api/axios";
 import Navbar from "../components/layout/Navbar";
@@ -16,6 +18,8 @@ function TasksPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -73,6 +77,23 @@ function TasksPage() {
 
   const handleTaskCreated = (newTask) => {
   setTasks((currentTasks) => [newTask, ...currentTasks]);
+};
+const handleOpenEditModal = (task) => {
+  setSelectedTask(task);
+  setIsEditModalOpen(true);
+};
+
+const handleCloseEditModal = () => {
+  setIsEditModalOpen(false);
+  setSelectedTask(null);
+};
+
+const handleTaskUpdated = (updatedTask) => {
+  setTasks((currentTasks) =>
+    currentTasks.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task
+    )
+  );
 };
 
   return (
@@ -147,15 +168,30 @@ function TasksPage() {
             <section className="tasks-grid">
               {filteredTasks.map((task) => (
                 <article className="task-card" key={task.id}>
-                  <div className="task-card-top">
+
+                 <div className="task-card-top">
                     <span className={`task-priority ${task.priority?.toLowerCase()}`}>
-                      {task.priority || "No priority"}
+                        {task.priority || "No priority"}
                     </span>
 
-                    <span className={`task-card-status ${task.status?.toLowerCase()}`}>
-                      {task.status?.replace("_", " ") || "Unknown"}
-                    </span>
-                  </div>
+                    <div className="task-card-top-actions">
+                        <span
+                        className={`task-card-status ${task.status?.toLowerCase()}`}
+                        >
+                        {task.status?.replace("_", " ") || "Unknown"}
+                        </span>
+
+                        <button
+                        className="task-edit-button"
+                        type="button"
+                        onClick={() => handleOpenEditModal(task)}
+                        aria-label={`Edit ${task.title}`}
+                        title="Edit task"
+                        >
+                        <Pencil size={16} />
+                        </button>
+                    </div>
+                    </div>
 
                   <div className="task-card-content">
                     <p className="task-category">
@@ -187,6 +223,12 @@ function TasksPage() {
         onClose={() => setIsCreateModalOpen(false)}
         onTaskCreated={handleTaskCreated}
         />
+            <EditTaskModal
+    isOpen={isEditModalOpen}
+    task={selectedTask}
+    onClose={handleCloseEditModal}
+    onTaskUpdated={handleTaskUpdated}
+    />
     </div>
   );
 }

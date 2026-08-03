@@ -458,6 +458,36 @@
     transform: translateY(0) scale(1);
   }
 }
+.task-card-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.task-edit-button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 11px;
+  background: #ffffff;
+  color: #64748b;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.task-edit-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(244, 169, 0, 0.3);
+  color: #bd7b00;
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.08),
+    0 0 18px rgba(244, 169, 0, 0.12);
+}
 
 @media (max-width: 640px) {
   .modal-backdrop {

@@ -89,9 +89,13 @@ function DashboardPage() {
               </p>
             </div>
 
-            <button className="hero-action-button" type="button">
-              + Create task
-            </button>
+         <button
+        className="hero-action-button"
+        type="button"
+        onClick={() => navigate("/tasks")}
+        >
+        + Create task
+        </button>
           </section>
 
           {isLoading && (
