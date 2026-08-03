@@ -5,7 +5,7 @@ import { Plus, Search } from "lucide-react";
 import api from "../api/axios";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
-
+import CreateTaskModal from "../components/tasks/CreateTaskModal";
 import "../styles/dashboard.css";
 import "../styles/tasks.css";
 
@@ -15,6 +15,7 @@ function TasksPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -70,6 +71,10 @@ function TasksPage() {
     navigate("/login", { replace: true });
   };
 
+  const handleTaskCreated = (newTask) => {
+  setTasks((currentTasks) => [newTask, ...currentTasks]);
+};
+
   return (
     <div className="dashboard-page">
       <Sidebar
@@ -93,10 +98,14 @@ function TasksPage() {
               </p>
             </div>
 
-            <button className="create-task-button" type="button">
-              <Plus size={19} />
-              Create task
-            </button>
+            <button
+                className="create-task-button"
+                type="button"
+                onClick={() => setIsCreateModalOpen(true)}
+                >
+                <Plus size={19} />
+                Create task
+                </button>
           </section>
 
           <section className="tasks-toolbar">
@@ -173,6 +182,11 @@ function TasksPage() {
           )}
         </main>
       </div>
+            <CreateTaskModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTaskCreated={handleTaskCreated}
+        />
     </div>
   );
 }
