@@ -1,15 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import api from "../api/axios";
+import DashboardStats from "../components/dashboard/DashboardStats";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
 
 import "../styles/dashboard.css";
 
+const initialStats = {
+  total_tasks: 0,
+  todo_tasks: 0,
+  in_progress_tasks: 0,
+  completed_tasks: 0,
+  overdue_tasks: 0,
+  due_today: 0,
+  completion_rate: 0,
+};
+
 function DashboardPage() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [stats, setStats] = useState(initialStats);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchDashboardStats = async () => {
+      try {
+        const response = await api.get("/dashboard/");
+        setStats(response.data);
+      } catch (requestError) {
+        if (requestError.response?.status === 401) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        setError("Could not load dashboard statistics.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardStats();
+  }, [navigate]);
 
   const handleToggleSidebar = () => {
     setIsSidebarCollapsed((current) => !current);
@@ -18,16 +55,11 @@ function DashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-
     navigate("/login", { replace: true });
   };
 
   return (
-    <div
-      className={`dashboard-page ${
-        isSidebarCollapsed ? "sidebar-is-collapsed" : ""
-      }`}
-    >
+    <div className="dashboard-page">
       <Sidebar
         isCollapsed={isSidebarCollapsed}
         onLogout={handleLogout}
@@ -60,6 +92,22 @@ function DashboardPage() {
               + Create task
             </button>
           </section>
+
+          {isLoading && (
+            <p className="dashboard-status-message">
+              Loading dashboard statistics...
+            </p>
+          )}
+
+          {error && (
+            <p className="dashboard-status-message error">
+              {error}
+            </p>
+          )}
+
+          {!isLoading && !error && (
+            <DashboardStats stats={stats} />
+          )}
         </main>
       </div>
     </div>

@@ -10,8 +10,7 @@ function LoginForm() {
     password: "",
   });
 
-  co
-  nst [message, setMessage] = useState("");
+  const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
