@@ -2,16 +2,14 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
+import TasksPage from "./pages/TasksPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-
-      <Route
-        path="/dashboard"
-        element={<DashboardPage />}
-      />
+      <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/tasks" element={<TasksPage />} />
 
       <Route
         path="/"

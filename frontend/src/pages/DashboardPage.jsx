@@ -5,7 +5,7 @@ import api from "../api/axios";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
-
+import RecentTasks from "../components/dashboard/RecentTasks";
 import "../styles/dashboard.css";
 
 const initialStats = {
@@ -22,8 +22,7 @@ function DashboardPage() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [stats, setStats] = useState(initialStats);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
+  const [error, setError] = useState("");const [tasks, setTasks] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +30,8 @@ function DashboardPage() {
       try {
         const response = await api.get("/dashboard/");
         setStats(response.data);
+        const tasksResponse = await api.get("/tasks/");
+        setTasks(tasksResponse.data);
       } catch (requestError) {
         if (requestError.response?.status === 401) {
           localStorage.removeItem("accessToken");
@@ -108,6 +109,8 @@ function DashboardPage() {
           {!isLoading && !error && (
             <DashboardStats stats={stats} />
           )}
+
+         <RecentTasks tasks={tasks} />
         </main>
       </div>
     </div>
