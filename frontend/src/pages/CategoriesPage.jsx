@@ -9,6 +9,9 @@ import {
 
 import api from "../api/axios";
 import CreateCategoryModal from "../components/categories/CreateCategoryModal";
+import EditCategoryModal from "../components/categories/EditCategoryModal";
+import DeleteCategoryModal from "../components/categories/DeleteCategoryModal";
+
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
 
@@ -28,6 +31,16 @@ function CategoriesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] =
     useState(false);
 
+  const [selectedCategory, setSelectedCategory] =
+    useState(null);
+
+  const [isEditModalOpen, setIsEditModalOpen] =
+    useState(false);
+  const [categoryToDelete, setCategoryToDelete] =
+  useState(null);
+
+  const [isDeletingCategory, setIsDeletingCategory] =
+  useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,6 +110,84 @@ function CategoriesPage() {
     ]);
   };
 
+  const handleOpenEditModal = (category) => {
+    setSelectedCategory(category);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedCategory(null);
+  };
+
+  const handleCategoryUpdated = (updatedCategory) => {
+    setCategories((currentCategories) =>
+      currentCategories.map((category) =>
+        category.id === updatedCategory.id
+          ? updatedCategory
+          : category
+      )
+    );
+  };
+const handleOpenDeleteModal = (category) => {
+  setCategoryToDelete(category);
+};
+
+const handleCloseDeleteModal = () => {
+  if (isDeletingCategory) {
+    return;
+  }
+
+  setCategoryToDelete(null);
+};
+
+const handleDeleteCategory = async () => {
+  if (!categoryToDelete) {
+    return;
+  }
+
+  setIsDeletingCategory(true);
+  setError("");
+
+  try {
+    await api.delete(
+      `/categories/${categoryToDelete.id}/`
+    );
+
+    setCategories((currentCategories) =>
+      currentCategories.filter(
+        (category) =>
+          category.id !== categoryToDelete.id
+      )
+    );
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.category === categoryToDelete.id
+          ? {
+              ...task,
+              category: null,
+              category_name: null,
+            }
+          : task
+      )
+    );
+
+    setCategoryToDelete(null);
+  } catch (requestError) {
+    if (requestError.response?.status === 401) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    setError("Could not delete the category.");
+  } finally {
+    setIsDeletingCategory(false);
+  }
+};
   return (
     <div className="dashboard-page">
       <Sidebar
@@ -209,18 +300,24 @@ function CategoriesPage() {
                           type="button"
                           title="Edit category"
                           aria-label={`Edit ${category.name}`}
+                          onClick={() =>
+                            handleOpenEditModal(category)
+                          }
                         >
                           <Pencil size={16} />
                         </button>
 
-                        <button
-                          className="category-delete-button"
-                          type="button"
-                          title="Delete category"
-                          aria-label={`Delete ${category.name}`}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+              <button
+                className="category-delete-button"
+                type="button"
+                title="Delete category"
+                aria-label={`Delete ${category.name}`}
+                onClick={() =>
+                    handleOpenDeleteModal(category)
+                }
+                >
+                <Trash2 size={16} />
+                </button>
                       </div>
                     </div>
 
@@ -260,6 +357,21 @@ function CategoriesPage() {
         }
         onCategoryCreated={handleCategoryCreated}
       />
+
+      <EditCategoryModal
+        isOpen={isEditModalOpen}
+        category={selectedCategory}
+        onClose={handleCloseEditModal}
+        onCategoryUpdated={handleCategoryUpdated}
+      />
+
+      <DeleteCategoryModal
+        isOpen={Boolean(categoryToDelete)}
+        category={categoryToDelete}
+        isDeleting={isDeletingCategory}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteCategory}
+        />
     </div>
   );
 }
