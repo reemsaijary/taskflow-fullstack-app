@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import TasksPage from "./pages/TasksPage";
+import CategoriesPage from "./pages/CategoriesPage";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/tasks" element={<TasksPage />} />
-
+      <Route path="/categories" element={<CategoriesPage />}/>
       <Route
         path="/"
         element={<Navigate to="/login" replace />}
