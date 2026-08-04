@@ -3,6 +3,8 @@
 }
 
 .categories-header {
+  position: relative;
+  overflow: hidden;
   padding: 32px;
   display: flex;
   align-items: center;
@@ -18,6 +20,27 @@
     ),
     rgba(255, 255, 255, 0.86);
   box-shadow: 0 22px 55px rgba(15, 23, 42, 0.08);
+}
+
+.categories-header::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(
+    rgba(255, 214, 79, 0.35),
+    transparent 70%
+  );
+  pointer-events: none;
+  animation: category-glow 8s ease-in-out infinite;
+}
+
+.categories-header > * {
+  position: relative;
+  z-index: 1;
 }
 
 .categories-eyebrow {
@@ -64,8 +87,8 @@
 .create-category-button:hover {
   transform: translateY(-3px);
   box-shadow:
-    0 19px 38px rgba(244, 169, 0, 0.34),
-    0 0 24px rgba(244, 169, 0, 0.18);
+    0 19px 38px rgba(244, 169, 0, 0.38),
+    0 0 30px rgba(244, 169, 0, 0.24);
 }
 
 .categories-summary {
@@ -76,11 +99,25 @@
 }
 
 .categories-summary article {
+  position: relative;
+  overflow: hidden;
   padding: 20px;
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.categories-summary article:hover {
+  transform: translateY(-6px);
+  border-color: rgba(244, 169, 0, 0.28);
+  box-shadow:
+    0 22px 45px rgba(15, 23, 42, 0.09),
+    0 0 24px rgba(244, 169, 0, 0.12);
 }
 
 .categories-summary span,
@@ -121,11 +158,11 @@
 }
 
 .category-card:hover {
-  transform: translateY(-7px);
+  transform: translateY(-8px) scale(1.01);
   border-color: rgba(244, 169, 0, 0.32);
   box-shadow:
-    0 26px 56px rgba(15, 23, 42, 0.1),
-    0 0 28px rgba(244, 169, 0, 0.12);
+    0 30px 65px rgba(15, 23, 42, 0.11),
+    0 0 30px rgba(244, 169, 0, 0.18);
 }
 
 .category-card-top {
@@ -142,7 +179,19 @@
   place-items: center;
   border-radius: 15px;
   color: #111827;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.1),
+    0 0 18px rgba(255, 214, 79, 0.18);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.category-card:hover .category-icon {
+  transform: rotate(-8deg) scale(1.08);
+  box-shadow:
+    0 16px 32px rgba(15, 23, 42, 0.12),
+    0 0 26px rgba(255, 214, 79, 0.32);
 }
 
 .category-actions {
@@ -172,10 +221,12 @@
 }
 
 .category-edit-button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.05);
   border-color: rgba(244, 169, 0, 0.3);
   color: #bd7b00;
-  box-shadow: 0 10px 24px rgba(244, 169, 0, 0.12);
+  box-shadow:
+    0 12px 26px rgba(244, 169, 0, 0.16),
+    0 0 20px rgba(244, 169, 0, 0.18);
 }
 
 .category-delete-button {
@@ -185,10 +236,12 @@
 }
 
 .category-delete-button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.05);
   border-color: rgba(239, 68, 68, 0.28);
   background: #fef2f2;
-  box-shadow: 0 10px 24px rgba(239, 68, 68, 0.1);
+  box-shadow:
+    0 12px 26px rgba(239, 68, 68, 0.12),
+    0 0 18px rgba(239, 68, 68, 0.15);
 }
 
 .category-card-content {
@@ -199,6 +252,14 @@
   margin-bottom: 8px;
   font-size: 22px;
   letter-spacing: -0.035em;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.category-card:hover .category-card-content h2 {
+  color: #c88400;
+  transform: translateX(2px);
 }
 
 .category-card-content p {
@@ -215,6 +276,11 @@
   border-top: 1px solid rgba(15, 23, 42, 0.07);
   color: #94a3b8;
   font-size: 12px;
+  transition: color 0.25s ease;
+}
+
+.category-card:hover .category-card-footer {
+  color: #64748b;
 }
 
 .category-colour-dot {
@@ -336,6 +402,19 @@
 .delete-category-confirm-button:disabled {
   cursor: not-allowed;
   opacity: 0.65;
+}
+
+@keyframes category-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.9;
+  }
 }
 
 @media (max-width: 520px) {
