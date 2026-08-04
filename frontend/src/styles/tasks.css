@@ -488,7 +488,119 @@
     0 10px 24px rgba(15, 23, 42, 0.08),
     0 0 18px rgba(244, 169, 0, 0.12);
 }
+.task-delete-button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(239, 68, 68, 0.14);
+  border-radius: 11px;
+  background: #fffafa;
+  color: #b42318;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
 
+.task-delete-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 68, 68, 0.28);
+  background: #fef2f2;
+  box-shadow:
+    0 10px 24px rgba(239, 68, 68, 0.1),
+    0 0 18px rgba(239, 68, 68, 0.08);
+}
+
+.delete-task-modal {
+  position: relative;
+  width: min(100%, 480px);
+  padding: 32px;
+  border: 1px solid rgba(239, 68, 68, 0.14);
+  border-radius: 26px;
+  background: #ffffff;
+  box-shadow:
+    0 32px 90px rgba(15, 23, 42, 0.24),
+    0 0 35px rgba(239, 68, 68, 0.1);
+  animation: modal-rise-in 0.25s ease;
+}
+
+.delete-modal-icon {
+  width: 54px;
+  height: 54px;
+  margin-bottom: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  background: #fef2f2;
+  color: #d92d20;
+}
+
+.delete-modal-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+}
+
+.delete-modal-content h2 {
+  margin: 8px 0 12px;
+  font-size: 30px;
+  letter-spacing: -0.04em;
+}
+
+.delete-modal-content p {
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.delete-modal-content strong {
+  color: #0f172a;
+}
+
+.delete-modal-actions {
+  margin-top: 28px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.delete-confirm-button {
+  min-height: 48px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f87171, #dc2626);
+  color: #ffffff;
+  font-weight: 850;
+  box-shadow: 0 12px 28px rgba(220, 38, 38, 0.22);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.delete-confirm-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 35px rgba(220, 38, 38, 0.3),
+    0 0 22px rgba(220, 38, 38, 0.12);
+}
+
+.delete-confirm-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 520px) {
+  .delete-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .delete-modal-actions button {
+    width: 100%;
+  }
+}
 @media (max-width: 640px) {
   .modal-backdrop {
     padding: 12px;

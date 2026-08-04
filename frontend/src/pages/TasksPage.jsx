@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Pencil, Plus, Search } from "lucide-react";
+import {
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+} from "lucide-react";
+
 import EditTaskModal from "../components/tasks/EditTaskModal";
+import DeleteTaskModal from "../components/tasks/DeleteTaskModal";
 
 import api from "../api/axios";
 import Navbar from "../components/layout/Navbar";
@@ -20,7 +27,8 @@ function TasksPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,6 +102,41 @@ const handleTaskUpdated = (updatedTask) => {
       task.id === updatedTask.id ? updatedTask : task
     )
   );
+};
+const handleOpenDeleteModal = (task) => {
+  setTaskToDelete(task);
+};
+
+const handleCloseDeleteModal = () => {
+  if (isDeleting) {
+    return;
+  }
+
+  setTaskToDelete(null);
+};
+
+const handleDeleteTask = async () => {
+  if (!taskToDelete) {
+    return;
+  }
+
+  setIsDeleting(true);
+
+  try {
+    await api.delete(`/tasks/${taskToDelete.id}/`);
+
+    setTasks((currentTasks) =>
+      currentTasks.filter(
+        (task) => task.id !== taskToDelete.id
+      )
+    );
+
+    setTaskToDelete(null);
+  } catch {
+    setError("Could not delete the task.");
+  } finally {
+    setIsDeleting(false);
+  }
 };
 
   return (
@@ -190,6 +233,15 @@ const handleTaskUpdated = (updatedTask) => {
                         >
                         <Pencil size={16} />
                         </button>
+                        <button
+                    className="task-delete-button"
+                    type="button"
+                    onClick={() => handleOpenDeleteModal(task)}
+                    aria-label={`Delete ${task.title}`}
+                    title="Delete task"
+                    >
+                    <Trash2 size={16} />
+                    </button>
                     </div>
                     </div>
 
@@ -228,6 +280,14 @@ const handleTaskUpdated = (updatedTask) => {
     task={selectedTask}
     onClose={handleCloseEditModal}
     onTaskUpdated={handleTaskUpdated}
+    />
+
+        <DeleteTaskModal
+    isOpen={Boolean(taskToDelete)}
+    task={taskToDelete}
+    isDeleting={isDeleting}
+    onClose={handleCloseDeleteModal}
+    onConfirm={handleDeleteTask}
     />
     </div>
   );
