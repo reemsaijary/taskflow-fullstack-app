@@ -5,6 +5,8 @@ import LoginPage from "./pages/LoginPage";
 import TasksPage from "./pages/TasksPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import SettingsPage from "./pages/SettingsPage";
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
       <Route path="/tasks" element={<TasksPage />} />
       <Route path="/categories" element={<CategoriesPage />}/>
       <Route path="/analytics" element={<AnalyticsPage />}/>
+      <Route path="/settings" element={<SettingsPage />}/>
       <Route
         path="/"
         element={<Navigate to="/login" replace />}

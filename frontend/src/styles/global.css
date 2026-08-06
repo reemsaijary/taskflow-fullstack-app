@@ -22,3 +22,647 @@ button {
 input {
   outline: none;
 }
+
+/* 
+   TaskFlow theme variables
+ */
+
+:root {
+  color-scheme: light;
+
+  --app-background: #f3f6fc;
+  --sidebar-background: rgba(255, 255, 255, 0.92);
+  --surface-background: rgba(255, 255, 255, 0.9);
+  --surface-solid: #ffffff;
+  --surface-muted: #f8fafc;
+
+  --primary-text: #0f172a;
+  --secondary-text: #64748b;
+  --muted-text: #94a3b8;
+
+  --app-border: rgba(15, 23, 42, 0.08);
+  --input-border: #dbe3ef;
+
+  --soft-shadow: rgba(15, 23, 42, 0.08);
+  --accent: #f4a900;
+  --accent-light: #ffd85b;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --app-background: #0b1120;
+  --sidebar-background: rgba(15, 23, 42, 0.96);
+  --surface-background: rgba(30, 41, 59, 0.92);
+  --surface-solid: #1e293b;
+  --surface-muted: #111c30;
+
+  --primary-text: #f8fafc;
+  --secondary-text: #cbd5e1;
+  --muted-text: #94a3b8;
+
+  --app-border: rgba(255, 255, 255, 0.1);
+  --input-border: rgba(255, 255, 255, 0.13);
+
+  --soft-shadow: rgba(0, 0, 0, 0.28);
+}
+
+/* 
+   Global theme application
+ */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background: var(--app-background);
+  color: var(--primary-text);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.dashboard-page,
+.dashboard-content {
+  background: var(--app-background);
+  color: var(--primary-text);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.sidebar {
+  background: var(--sidebar-background);
+  border-color: var(--app-border);
+  color: var(--primary-text);
+}
+
+.settings-profile-card,
+.settings-form-card,
+.analytics-card,
+.analytics-chart-panel,
+.analytics-progress-panel,
+.category-card,
+.categories-summary article,
+.task-card {
+  background: var(--surface-background);
+  border-color: var(--app-border);
+  color: var(--primary-text);
+}
+
+.settings-header h1,
+.settings-form-card h2,
+.settings-profile-card h2,
+.analytics-header h1,
+.analytics-panel-heading h2,
+.category-card h2,
+.task-card h2 {
+  color: var(--primary-text);
+}
+
+.settings-header p,
+.settings-section-heading p,
+.settings-profile-card > p,
+.analytics-header p,
+.task-description,
+.category-card-content p {
+  color: var(--secondary-text);
+}
+
+.settings-form-group input,
+.settings-form-group textarea,
+.settings-form-group select,
+.tasks-search,
+.tasks-filters select {
+  background: var(--surface-muted);
+  border-color: var(--input-border);
+  color: var(--primary-text);
+}
+
+.settings-form-group input:disabled {
+  background: color-mix(
+    in srgb,
+    var(--surface-muted) 78%,
+    var(--app-background)
+  );
+  color: var(--secondary-text);
+}
+
+:root[data-theme="dark"] .settings-header,
+:root[data-theme="dark"] .analytics-header,
+:root[data-theme="dark"] .tasks-header,
+:root[data-theme="dark"] .categories-header,
+:root[data-theme="dark"] .dashboard-hero {
+  background:
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(244, 169, 0, 0.16),
+      transparent 28%
+    ),
+    var(--surface-background);
+  border-color: var(--app-border);
+}
+
+:root[data-theme="dark"] .settings-avatar,
+:root[data-theme="dark"] .navbar-avatar {
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .modal-backdrop {
+  background: rgba(2, 6, 23, 0.7);
+}
+
+:root[data-theme="dark"] .create-task-modal,
+:root[data-theme="dark"] .delete-task-modal,
+:root[data-theme="dark"] .delete-category-modal {
+  background: var(--surface-solid);
+  border-color: var(--app-border);
+  color: var(--primary-text);
+}
+
+:root[data-theme="dark"] .settings-form-group select {
+  background: #111c30;
+  border-color: rgba(255, 255, 255, 0.13);
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .settings-form-group select option {
+  background: #111c30;
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .settings-form-group select:focus {
+  background: #111c30;
+  border-color: #f4b000;
+  box-shadow: 0 0 0 4px rgba(244, 176, 0, 0.14);
+}
+:root[data-theme="dark"] .settings-form-group label,
+:root[data-theme="dark"] .settings-account-detail strong {
+  color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .settings-form-group small,
+:root[data-theme="dark"] .settings-account-detail span {
+  color: #94a3b8;
+}
+
+/* =========================================
+   TASKFLOW DARK MODE — PAGE FIXES
+========================================= */
+
+:root[data-theme="dark"] {
+  --dark-page: #0b1120;
+  --dark-sidebar: #0f1a2d;
+  --dark-surface: #1e293b;
+  --dark-surface-soft: #172337;
+  --dark-input: #111c30;
+  --dark-border: rgba(148, 163, 184, 0.18);
+
+  --dark-title: #f8fafc;
+  --dark-text: #cbd5e1;
+  --dark-muted: #94a3b8;
+}
+
+/* App background */
+
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] #root,
+:root[data-theme="dark"] .dashboard-page,
+:root[data-theme="dark"] .dashboard-content {
+  background: var(--dark-page);
+  color: var(--dark-title);
+}
+
+/* Sidebar */
+
+:root[data-theme="dark"] .sidebar {
+  background: var(--dark-sidebar);
+  border-right-color: var(--dark-border);
+}
+
+:root[data-theme="dark"] .sidebar-logo,
+:root[data-theme="dark"] .sidebar-brand {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+}
+
+:root[data-theme="dark"] .sidebar-logo span,
+:root[data-theme="dark"] .sidebar-brand span {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .sidebar-nav a,
+:root[data-theme="dark"] .sidebar-link,
+:root[data-theme="dark"] .sidebar-nav-link {
+  color: var(--dark-muted);
+}
+
+:root[data-theme="dark"] .sidebar-nav a:hover,
+:root[data-theme="dark"] .sidebar-link:hover,
+:root[data-theme="dark"] .sidebar-nav-link:hover {
+  color: var(--dark-title);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme="dark"] .sidebar-nav a.active,
+:root[data-theme="dark"] .sidebar-link.active,
+:root[data-theme="dark"] .sidebar-nav-link.active {
+  color: #111827;
+  background: linear-gradient(135deg, #ffd85b, #f4a900);
+  box-shadow:
+    0 14px 30px rgba(244, 169, 0, 0.26),
+    0 0 22px rgba(244, 169, 0, 0.14);
+}
+
+/* Main hero/header cards */
+
+:root[data-theme="dark"] .dashboard-hero,
+:root[data-theme="dark"] .tasks-header,
+:root[data-theme="dark"] .categories-header,
+:root[data-theme="dark"] .analytics-header,
+:root[data-theme="dark"] .settings-header {
+  background:
+    radial-gradient(
+      circle at 90% 15%,
+      rgba(244, 169, 0, 0.17),
+      transparent 27%
+    ),
+    var(--dark-surface);
+  border-color: var(--dark-border);
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .dashboard-hero h1,
+:root[data-theme="dark"] .tasks-header h1,
+:root[data-theme="dark"] .categories-header h1,
+:root[data-theme="dark"] .analytics-header h1,
+:root[data-theme="dark"] .settings-header h1 {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .dashboard-hero p,
+:root[data-theme="dark"] .tasks-header p,
+:root[data-theme="dark"] .categories-header p,
+:root[data-theme="dark"] .analytics-header p,
+:root[data-theme="dark"] .settings-header p {
+  color: var(--dark-text);
+}
+
+/* Dashboard statistics */
+
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .dashboard-stat-card,
+:root[data-theme="dark"] .recent-task-card,
+:root[data-theme="dark"] .recent-task-item {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .stat-card h3,
+:root[data-theme="dark"] .stat-card strong,
+:root[data-theme="dark"] .dashboard-stat-card h3,
+:root[data-theme="dark"] .dashboard-stat-card strong,
+:root[data-theme="dark"] .recent-task-card h3,
+:root[data-theme="dark"] .recent-task-item h3 {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .stat-card p,
+:root[data-theme="dark"] .dashboard-stat-card p,
+:root[data-theme="dark"] .recent-task-card p,
+:root[data-theme="dark"] .recent-task-item p {
+  color: var(--dark-muted);
+}
+
+/* View all button */
+
+/* Task cards */
+
+:root[data-theme="dark"] .task-card {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+}
+
+:root[data-theme="dark"] .task-card h2,
+:root[data-theme="dark"] .task-progress-heading strong {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .task-description,
+:root[data-theme="dark"] .task-card-footer,
+:root[data-theme="dark"] .task-progress-heading {
+  color: var(--dark-muted);
+}
+
+:root[data-theme="dark"] .task-progress-track {
+  background: #0f1a2d;
+}
+
+:root[data-theme="dark"] .task-edit-button {
+  background: var(--dark-input);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+/* Category cards */
+
+:root[data-theme="dark"] .category-card,
+:root[data-theme="dark"] .categories-summary article {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+}
+
+:root[data-theme="dark"] .category-card h2,
+:root[data-theme="dark"] .categories-summary strong {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .category-card p,
+:root[data-theme="dark"] .categories-summary span,
+:root[data-theme="dark"] .category-card-footer {
+  color: var(--dark-muted);
+}
+
+:root[data-theme="dark"] .category-edit-button {
+  background: var(--dark-input);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+/* Analytics */
+
+:root[data-theme="dark"] .analytics-card,
+:root[data-theme="dark"] .analytics-secondary-summary article,
+:root[data-theme="dark"] .analytics-progress-panel,
+:root[data-theme="dark"] .analytics-chart-panel {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+}
+
+:root[data-theme="dark"] .analytics-card strong,
+:root[data-theme="dark"] .analytics-secondary-summary strong,
+:root[data-theme="dark"] .analytics-panel-heading h2,
+:root[data-theme="dark"] .analytics-empty-chart h3 {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .analytics-card span,
+:root[data-theme="dark"] .analytics-secondary-summary span,
+:root[data-theme="dark"] .analytics-progress-panel p,
+:root[data-theme="dark"] .analytics-empty-chart p {
+  color: var(--dark-muted);
+}
+
+:root[data-theme="dark"] .analytics-progress-track {
+  background: #0f1a2d;
+}
+
+/* Settings */
+
+:root[data-theme="dark"] .settings-profile-card,
+:root[data-theme="dark"] .settings-form-card {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+}
+
+:root[data-theme="dark"] .settings-profile-card h2,
+:root[data-theme="dark"] .settings-section-heading h2,
+:root[data-theme="dark"] .settings-account-detail strong {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .settings-profile-card > p,
+:root[data-theme="dark"] .settings-section-heading p,
+:root[data-theme="dark"] .settings-account-detail span,
+:root[data-theme="dark"] .settings-form-group small {
+  color: var(--dark-muted);
+}
+
+:root[data-theme="dark"] .settings-account-detail {
+  border-top-color: var(--dark-border);
+}
+
+/* Inputs */
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select {
+  background: var(--dark-input);
+  border-color: var(--dark-border);
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder {
+  color: var(--dark-muted);
+}
+
+:root[data-theme="dark"] input:disabled {
+  background: #172337;
+  color: var(--dark-text);
+}
+
+/* Empty states and messages */
+
+:root[data-theme="dark"] .tasks-empty-state,
+:root[data-theme="dark"] .categories-empty-state,
+:root[data-theme="dark"] .tasks-message,
+:root[data-theme="dark"] .categories-message,
+:root[data-theme="dark"] .analytics-message {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+/* Modals */
+
+:root[data-theme="dark"] .create-task-modal,
+:root[data-theme="dark"] .delete-task-modal,
+:root[data-theme="dark"] .delete-category-modal {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .modal-header h2,
+:root[data-theme="dark"] .delete-modal-content h2,
+:root[data-theme="dark"] .delete-category-content h2 {
+  color: var(--dark-title);
+}
+
+:root[data-theme="dark"] .modal-header p,
+:root[data-theme="dark"] .delete-modal-content p,
+:root[data-theme="dark"] .delete-category-content p {
+  color: var(--dark-text);
+}
+
+:root[data-theme="dark"] .modal-close-button,
+:root[data-theme="dark"] .modal-secondary-button {
+  background: var(--dark-input);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+/* Login page stays intentionally light */
+
+:root[data-theme="dark"] .login-page {
+  background: #f4f7fb;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .login-card {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .login-card h2,
+:root[data-theme="dark"] .login-card label {
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .login-card p {
+  color: #64748b;
+}
+
+:root[data-theme="dark"] .login-card input {
+  background: #eaf1fc;
+  border-color: #d5deed;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .login-card input::placeholder {
+  color: #94a3b8;
+}
+
+/* =========================================
+   DARK MODE — DASHBOARD EXACT SELECTORS
+========================================= */
+
+/* Navbar container stays light for contrast */
+
+:root[data-theme="dark"] .dashboard-navbar {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.22),
+    0 0 24px rgba(244, 169, 0, 0.05);
+}
+
+/* Navbar heading */
+
+:root[data-theme="dark"] .navbar-left h2 {
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .navbar-left p {
+  color: #64748b;
+}
+
+/* Sidebar toggle and notification button */
+
+:root[data-theme="dark"] .sidebar-toggle,
+:root[data-theme="dark"] .navbar-icon-button {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #334155;
+}
+
+/* Search */
+
+:root[data-theme="dark"] .dashboard-search {
+  background: #f8fafc;
+  border-color: #dbe3ef;
+  color: #94a3b8;
+}
+
+:root[data-theme="dark"] .dashboard-search:focus-within {
+  background: #ffffff;
+  border-color: #f4b000;
+  box-shadow: 0 0 0 4px rgba(244, 176, 0, 0.12);
+}
+
+:root[data-theme="dark"] .dashboard-search input {
+  background: transparent;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .dashboard-search input::placeholder {
+  color: #64748b;
+}
+
+/* Profile chip */
+
+:root[data-theme="dark"] .profile-chip {
+  background: #fff9e8;
+  border-color: rgba(244, 169, 0, 0.18);
+}
+
+:root[data-theme="dark"] .profile-details strong {
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .profile-details span {
+  color: #8a6500;
+}
+
+/* Recent tasks heading */
+
+:root[data-theme="dark"] .recent-tasks .section-header h2 {
+  color: #f8fafc;
+}
+
+/* View All button */
+
+:root[data-theme="dark"] .recent-tasks .view-all-btn {
+  background: #1e293b;
+  border-color: rgba(148, 163, 184, 0.2);
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .recent-tasks .view-all-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(244, 169, 0, 0.38);
+  color: #f4b000;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.22),
+    0 0 20px rgba(244, 169, 0, 0.14);
+}
+
+/* Recent task cards */
+
+:root[data-theme="dark"] .recent-task-card {
+  background: #1e293b;
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+:root[data-theme="dark"] .recent-task-content h3 {
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .recent-task-content p,
+:root[data-theme="dark"] .recent-task-meta small {
+  color: #94a3b8;
+}
+
+/* Empty recent-tasks state */
+
+:root[data-theme="dark"] .empty-tasks-state {
+  background: #1e293b;
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+:root[data-theme="dark"] .empty-tasks-state h3 {
+  color: #f8fafc;
+}
+
+:root[data-theme="dark"] .empty-tasks-state p {
+  color: #94a3b8;
+}
