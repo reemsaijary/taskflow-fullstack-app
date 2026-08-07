@@ -64,18 +64,29 @@ function SettingsPage() {
           JSON.stringify(user)
         );
 
-        applyThemePreference(themePreference);
+        /*
+         * Important:
+         * Do NOT apply the saved theme here.
+         *
+         * This prevents opening Settings from suddenly
+         * changing the theme.
+         */
       } catch (requestError) {
         if (requestError.response?.status === 401) {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("currentUser");
 
-          navigate("/login", { replace: true });
+          navigate("/login", {
+            replace: true,
+          });
+
           return;
         }
 
-        setMessage("Could not load your account settings.");
+        setMessage(
+          "Could not load your account settings."
+        );
         setMessageType("error");
       } finally {
         setIsLoading(false);
@@ -85,6 +96,10 @@ function SettingsPage() {
     fetchUser();
   }, [navigate]);
 
+  /*
+   * If SYSTEM is selected, listen for operating-system
+   * theme changes while the Settings page is open.
+   */
   useEffect(() => {
     const mediaQuery = window.matchMedia(
       "(prefers-color-scheme: dark)"
@@ -117,6 +132,10 @@ function SettingsPage() {
       [name]: value,
     }));
 
+    /*
+     * Preview the theme immediately when the user
+     * changes the dropdown.
+     */
     if (name === "theme_preference") {
       applyThemePreference(value);
     }
@@ -133,30 +152,39 @@ function SettingsPage() {
     setMessageType("");
 
     try {
-      const response = await api.patch("/auth/me/", {
-        first_name: formData.first_name.trim(),
-        last_name: formData.last_name.trim(),
-        profile: {
-          bio: formData.bio,
-          theme_preference:
-            formData.theme_preference,
-        },
-      });
+      const response = await api.patch(
+        "/auth/me/",
+        {
+          first_name: formData.first_name.trim(),
+          last_name: formData.last_name.trim(),
+
+          profile: {
+            bio: formData.bio,
+            theme_preference:
+              formData.theme_preference,
+          },
+        }
+      );
 
       const updatedUser = response.data;
 
       setFormData((current) => ({
         ...current,
-        first_name: updatedUser.first_name || "",
-        last_name: updatedUser.last_name || "",
-        email: updatedUser.email || current.email,
+        first_name:
+          updatedUser.first_name || "",
+        last_name:
+          updatedUser.last_name || "",
+        email:
+          updatedUser.email ||
+          current.email,
         date_joined:
           updatedUser.date_joined ||
           current.date_joined,
-        bio: updatedUser.profile?.bio || "",
+        bio:
+          updatedUser.profile?.bio || "",
         theme_preference:
-          updatedUser.profile?.theme_preference ||
-          "LIGHT",
+          updatedUser.profile
+            ?.theme_preference || "LIGHT",
       }));
 
       localStorage.setItem(
@@ -164,34 +192,65 @@ function SettingsPage() {
         JSON.stringify(updatedUser)
       );
 
+      /*
+       * Apply the final theme returned by Django.
+       */
       applyThemePreference(
-        updatedUser.profile?.theme_preference ||
-          "LIGHT"
+        updatedUser.profile
+          ?.theme_preference || "LIGHT"
       );
 
+      /*
+       * Let Navbar and other components know that
+       * the user's information changed.
+       */
       window.dispatchEvent(
-        new CustomEvent("current-user-updated", {
-          detail: updatedUser,
-        })
+        new CustomEvent(
+          "current-user-updated",
+          {
+            detail: updatedUser,
+          }
+        )
       );
 
-      setMessage("Settings updated successfully.");
+      setMessage(
+        "Settings updated successfully."
+      );
       setMessageType("success");
     } catch (requestError) {
-      if (requestError.response?.status === 401) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("currentUser");
+      if (
+        requestError.response?.status === 401
+      ) {
+        localStorage.removeItem(
+          "accessToken"
+        );
 
-        navigate("/login", { replace: true });
+        localStorage.removeItem(
+          "refreshToken"
+        );
+
+        localStorage.removeItem(
+          "currentUser"
+        );
+
+        navigate("/login", {
+          replace: true,
+        });
+
         return;
       }
 
-      const responseData = requestError.response?.data;
+      const responseData =
+        requestError.response?.data;
 
-      if (responseData && typeof responseData === "object") {
+      if (
+        responseData &&
+        typeof responseData === "object"
+      ) {
         const firstError =
-          Object.values(responseData).flat()[0];
+          Object.values(
+            responseData
+          ).flat()[0];
 
         setMessage(
           typeof firstError === "string"
@@ -199,7 +258,9 @@ function SettingsPage() {
             : "Could not update your settings."
         );
       } else {
-        setMessage("Could not update your settings.");
+        setMessage(
+          "Could not update your settings."
+        );
       }
 
       setMessageType("error");
@@ -209,47 +270,75 @@ function SettingsPage() {
   };
 
   const handleToggleSidebar = () => {
-    setIsSidebarCollapsed((current) => !current);
+    setIsSidebarCollapsed(
+      (current) => !current
+    );
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("currentUser");
+    localStorage.removeItem(
+      "accessToken"
+    );
 
-    navigate("/login", { replace: true });
+    localStorage.removeItem(
+      "refreshToken"
+    );
+
+    localStorage.removeItem(
+      "currentUser"
+    );
+
+    navigate("/login", {
+      replace: true,
+    });
   };
 
   const fullName =
     `${formData.first_name} ${formData.last_name}`.trim() ||
     "TaskFlow User";
 
-  const initials = `${formData.first_name?.[0] || ""}${
-    formData.last_name?.[0] || ""
-  }`.toUpperCase();
+  const initials =
+    `${formData.first_name?.[0] || ""}${
+      formData.last_name?.[0] || ""
+    }`.toUpperCase();
 
-  const joinedDate = formData.date_joined
-    ? new Date(formData.date_joined).toLocaleDateString(
-        undefined,
-        {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }
-      )
-    : "Unavailable";
+  const joinedDate =
+    formData.date_joined
+      ? new Date(
+          formData.date_joined
+        ).toLocaleDateString(
+          undefined,
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }
+        )
+      : "Unavailable";
 
   return (
     <div className="dashboard-page">
       <Sidebar
-        isCollapsed={isSidebarCollapsed}
+        isCollapsed={
+          isSidebarCollapsed
+        }
         onLogout={handleLogout}
       />
 
       <div className="dashboard-content">
         <Navbar
-          isCollapsed={isSidebarCollapsed}
-          onToggleSidebar={handleToggleSidebar}
+          isCollapsed={
+            isSidebarCollapsed
+          }
+          onToggleSidebar={
+            handleToggleSidebar
+          }
+          currentUser={{
+            first_name:
+              formData.first_name,
+            last_name:
+              formData.last_name,
+          }}
         />
 
         <main className="settings-main">
@@ -262,8 +351,9 @@ function SettingsPage() {
               <h1>Settings</h1>
 
               <p>
-                Manage your profile information and
-                workspace preferences.
+                Manage your profile
+                information and workspace
+                preferences.
               </p>
             </div>
           </section>
@@ -277,28 +367,47 @@ function SettingsPage() {
               <aside className="settings-profile-card">
                 <div className="settings-avatar">
                   {initials || (
-                    <UserRound size={34} />
+                    <UserRound
+                      size={34}
+                    />
                   )}
                 </div>
 
                 <h2>{fullName}</h2>
-                <p>{formData.email}</p>
+
+                <p>
+                  {formData.email}
+                </p>
 
                 <div className="settings-account-detail">
                   <Mail size={18} />
 
                   <div>
-                    <span>Email</span>
-                    <strong>{formData.email}</strong>
+                    <span>
+                      Email
+                    </span>
+
+                    <strong>
+                      {
+                        formData.email
+                      }
+                    </strong>
                   </div>
                 </div>
 
                 <div className="settings-account-detail">
-                  <CalendarDays size={18} />
+                  <CalendarDays
+                    size={18}
+                  />
 
                   <div>
-                    <span>Member since</span>
-                    <strong>{joinedDate}</strong>
+                    <span>
+                      Member since
+                    </span>
+
+                    <strong>
+                      {joinedDate}
+                    </strong>
                   </div>
                 </div>
               </aside>
@@ -309,17 +418,21 @@ function SettingsPage() {
                     Profile
                   </span>
 
-                  <h2>Personal information</h2>
+                  <h2>
+                    Personal information
+                  </h2>
 
                   <p>
-                    Update how your account appears in
-                    TaskFlow.
+                    Update how your account
+                    appears in TaskFlow.
                   </p>
                 </div>
 
                 <form
                   className="settings-form"
-                  onSubmit={handleSubmit}
+                  onSubmit={
+                    handleSubmit
+                  }
                 >
                   <div className="settings-form-group">
                     <label htmlFor="settings-first-name">
@@ -330,8 +443,12 @@ function SettingsPage() {
                       id="settings-first-name"
                       name="first_name"
                       type="text"
-                      value={formData.first_name}
-                      onChange={handleChange}
+                      value={
+                        formData.first_name
+                      }
+                      onChange={
+                        handleChange
+                      }
                       required
                     />
                   </div>
@@ -345,8 +462,12 @@ function SettingsPage() {
                       id="settings-last-name"
                       name="last_name"
                       type="text"
-                      value={formData.last_name}
-                      onChange={handleChange}
+                      value={
+                        formData.last_name
+                      }
+                      onChange={
+                        handleChange
+                      }
                       required
                     />
                   </div>
@@ -360,12 +481,15 @@ function SettingsPage() {
                       id="settings-email"
                       name="email"
                       type="email"
-                      value={formData.email}
+                      value={
+                        formData.email
+                      }
                       disabled
                     />
 
                     <small>
-                      Email cannot be changed from this page.
+                      Email cannot be changed
+                      from this page.
                     </small>
                   </div>
 
@@ -379,8 +503,12 @@ function SettingsPage() {
                       name="bio"
                       rows="5"
                       placeholder="Tell us a little about yourself..."
-                      value={formData.bio}
-                      onChange={handleChange}
+                      value={
+                        formData.bio
+                      }
+                      onChange={
+                        handleChange
+                      }
                     />
                   </div>
 
@@ -395,7 +523,9 @@ function SettingsPage() {
                       value={
                         formData.theme_preference
                       }
-                      onChange={handleChange}
+                      onChange={
+                        handleChange
+                      }
                     >
                       <option value="LIGHT">
                         Light
@@ -411,8 +541,10 @@ function SettingsPage() {
                     </select>
 
                     <small>
-                      The selected theme is applied
-                      immediately and saved to your account.
+                      The selected theme is
+                      previewed immediately and
+                      saved when you click Save
+                      changes.
                     </small>
                   </div>
 
@@ -420,11 +552,16 @@ function SettingsPage() {
                     <div
                       className={`settings-message ${messageType}`}
                     >
-                      {messageType === "success" && (
-                        <CheckCircle2 size={18} />
+                      {messageType ===
+                        "success" && (
+                        <CheckCircle2
+                          size={18}
+                        />
                       )}
 
-                      <span>{message}</span>
+                      <span>
+                        {message}
+                      </span>
                     </div>
                   )}
 
@@ -432,7 +569,9 @@ function SettingsPage() {
                     <button
                       className="settings-save-button"
                       type="submit"
-                      disabled={isSaving}
+                      disabled={
+                        isSaving
+                      }
                     >
                       <Save size={18} />
 
