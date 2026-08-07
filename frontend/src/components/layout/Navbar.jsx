@@ -5,20 +5,46 @@ import {
   Search,
 } from "lucide-react";
 
+function getStoredUser() {
+  try {
+    const storedUser =
+      localStorage.getItem("currentUser");
+
+    return storedUser
+      ? JSON.parse(storedUser)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 function Navbar({
   isCollapsed,
   onToggleSidebar,
   currentUser,
 }) {
+  /*
+   * Some pages already fetch the user and pass it
+   * through currentUser.
+   *
+   * Other pages do not.
+   *
+   * In that case, Navbar automatically falls back
+   * to the user saved in localStorage after login.
+   */
+  const user =
+    currentUser || getStoredUser();
+
   const firstName =
-    currentUser?.first_name || "User";
+    user?.first_name?.trim() || "User";
 
   const lastName =
-    currentUser?.last_name || "";
+    user?.last_name?.trim() || "";
 
-  const initials = `${firstName.charAt(0)}${lastName.charAt(
-    0
-  )}`.toUpperCase();
+  const initials =
+    `${firstName.charAt(0)}${lastName.charAt(
+      0
+    )}`.toUpperCase() || "U";
 
   return (
     <header className="dashboard-navbar">
@@ -28,6 +54,11 @@ function Navbar({
           type="button"
           onClick={onToggleSidebar}
           aria-label={
+            isCollapsed
+              ? "Expand sidebar"
+              : "Collapse sidebar"
+          }
+          title={
             isCollapsed
               ? "Expand sidebar"
               : "Collapse sidebar"
@@ -42,7 +73,10 @@ function Navbar({
 
         <div>
           <h2>Dashboard</h2>
-          <p>Manage your productivity workspace.</p>
+
+          <p>
+            Manage your productivity workspace.
+          </p>
         </div>
       </div>
 
@@ -53,14 +87,18 @@ function Navbar({
           <input
             type="search"
             placeholder="Search tasks..."
+            aria-label="Search tasks"
           />
         </label>
 
         <button
           className="navbar-icon-button"
           type="button"
+          aria-label="Notifications"
+          title="Notifications"
         >
           <Bell size={20} />
+
           <span className="notification-dot" />
         </button>
 
@@ -71,6 +109,7 @@ function Navbar({
 
           <div className="profile-details">
             <strong>{firstName}</strong>
+
             <span>My workspace</span>
           </div>
         </div>
