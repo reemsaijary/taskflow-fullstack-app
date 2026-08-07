@@ -6,12 +6,13 @@ import TasksPage from "./pages/TasksPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
-
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/tasks" element={<TasksPage />} />
       <Route path="/categories" element={<CategoriesPage />}/>

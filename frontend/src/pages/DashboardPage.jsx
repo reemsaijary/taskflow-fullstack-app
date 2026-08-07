@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import api from "../api/axios";
 import DashboardStats from "../components/dashboard/DashboardStats";
+import RecentTasks from "../components/dashboard/RecentTasks";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
-import RecentTasks from "../components/dashboard/RecentTasks";
+
 import "../styles/dashboard.css";
 
 const initialStats = {
@@ -18,36 +19,101 @@ const initialStats = {
   completion_rate: 0,
 };
 
+function getStoredUser() {
+  try {
+    const storedUser =
+      localStorage.getItem("currentUser");
+
+    return storedUser
+      ? JSON.parse(storedUser)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 function DashboardPage() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] =
+    useState(false);
+
   const [stats, setStats] = useState(initialStats);
+  const [tasks, setTasks] = useState([]);
+  const [currentUser, setCurrentUser] =
+    useState(getStoredUser);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDashboardStats = async () => {
+    const fetchDashboardData = async () => {
+      setIsLoading(true);
+      setError("");
+
       try {
-        const response = await api.get("/dashboard/");
-        setStats(response.data);
-        const tasksResponse = await api.get("/tasks/");
+        const [
+          statisticsResponse,
+          tasksResponse,
+          userResponse,
+        ] = await Promise.all([
+          api.get("/dashboard/"),
+          api.get("/tasks/"),
+          api.get("/auth/me/"),
+        ]);
+
+        setStats(statisticsResponse.data);
         setTasks(tasksResponse.data);
+        setCurrentUser(userResponse.data);
+
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify(userResponse.data)
+        );
       } catch (requestError) {
         if (requestError.response?.status === 401) {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          navigate("/login", { replace: true });
+          localStorage.removeItem("currentUser");
+
+          navigate("/login", {
+            replace: true,
+          });
+
           return;
         }
 
-        setError("Could not load dashboard statistics.");
+        setError(
+          "Could not load your dashboard information."
+        );
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchDashboardStats();
+    fetchDashboardData();
   }, [navigate]);
+
+  useEffect(() => {
+    const handleCurrentUserUpdated = (event) => {
+      const updatedUser =
+        event.detail || getStoredUser();
+
+      setCurrentUser(updatedUser);
+    };
+
+    window.addEventListener(
+      "current-user-updated",
+      handleCurrentUserUpdated
+    );
+
+    return () => {
+      window.removeEventListener(
+        "current-user-updated",
+        handleCurrentUserUpdated
+      );
+    };
+  }, []);
 
   const handleToggleSidebar = () => {
     setIsSidebarCollapsed((current) => !current);
@@ -56,8 +122,15 @@ function DashboardPage() {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    navigate("/login", { replace: true });
+    localStorage.removeItem("currentUser");
+
+    navigate("/login", {
+      replace: true,
+    });
   };
+
+  const firstName =
+    currentUser?.first_name?.trim() || "there";
 
   return (
     <div className="dashboard-page">
@@ -67,9 +140,10 @@ function DashboardPage() {
       />
 
       <div className="dashboard-content">
-        <Navbar
+       <Navbar
           isCollapsed={isSidebarCollapsed}
           onToggleSidebar={handleToggleSidebar}
+          currentUser={currentUser}
         />
 
         <main className="dashboard-main">
@@ -80,27 +154,28 @@ function DashboardPage() {
               </span>
 
               <h1>
-                Welcome back, <span>Reem</span> 👋
+                Welcome back,{" "}
+                <span>{firstName}</span> 👋
               </h1>
 
               <p>
-                Track your tasks, review your progress, and stay focused
-                on what matters most.
+                Track your tasks, review your progress, and
+                stay focused on what matters most.
               </p>
             </div>
 
-         <button
-        className="hero-action-button"
-        type="button"
-        onClick={() => navigate("/tasks")}
-        >
-        + Create task
-        </button>
+            <button
+              className="hero-action-button"
+              type="button"
+              onClick={() => navigate("/tasks")}
+            >
+              + Create task
+            </button>
           </section>
 
           {isLoading && (
             <p className="dashboard-status-message">
-              Loading dashboard statistics...
+              Loading dashboard information...
             </p>
           )}
 
@@ -111,10 +186,11 @@ function DashboardPage() {
           )}
 
           {!isLoading && !error && (
-            <DashboardStats stats={stats} />
+            <>
+              <DashboardStats stats={stats} />
+              <RecentTasks tasks={tasks} />
+            </>
           )}
-
-         <RecentTasks tasks={tasks} />
         </main>
       </div>
     </div>

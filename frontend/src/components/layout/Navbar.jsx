@@ -1,6 +1,25 @@
-import { Bell, Menu, PanelLeftClose, Search } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  PanelLeftClose,
+  Search,
+} from "lucide-react";
 
-function Navbar({ isCollapsed, onToggleSidebar }) {
+function Navbar({
+  isCollapsed,
+  onToggleSidebar,
+  currentUser,
+}) {
+  const firstName =
+    currentUser?.first_name || "User";
+
+  const lastName =
+    currentUser?.last_name || "";
+
+  const initials = `${firstName.charAt(0)}${lastName.charAt(
+    0
+  )}`.toUpperCase();
+
   return (
     <header className="dashboard-navbar">
       <div className="navbar-left">
@@ -9,9 +28,10 @@ function Navbar({ isCollapsed, onToggleSidebar }) {
           type="button"
           onClick={onToggleSidebar}
           aria-label={
-            isCollapsed ? "Expand sidebar" : "Collapse sidebar"
+            isCollapsed
+              ? "Expand sidebar"
+              : "Collapse sidebar"
           }
-          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? (
             <Menu size={22} />
@@ -33,24 +53,24 @@ function Navbar({ isCollapsed, onToggleSidebar }) {
           <input
             type="search"
             placeholder="Search tasks..."
-            aria-label="Search tasks"
           />
         </label>
 
         <button
           className="navbar-icon-button"
           type="button"
-          aria-label="Notifications"
         >
           <Bell size={20} />
           <span className="notification-dot" />
         </button>
 
         <div className="profile-chip">
-          <div className="profile-avatar">RS</div>
+          <div className="profile-avatar">
+            {initials}
+          </div>
 
           <div className="profile-details">
-            <strong>Reem</strong>
+            <strong>{firstName}</strong>
             <span>My workspace</span>
           </div>
         </div>
